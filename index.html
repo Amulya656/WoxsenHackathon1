@@ -1,23 +1,200 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Community Skill Swap</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Skill Swap Platform</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
+
+        body {
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(to right, #f8f9fa, #e3f2fd);
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .title-page {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: purple;
+            color: white;
+            font-size: 60px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            animation: flash 1.5s infinite alternate;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            font-weight: normal;
+            margin-top: 10px;
+        }
+
+        @keyframes flash {
+            0% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.5;
+            }
+        }
+
+        .container {
+            width: 350px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        h1 {
+            color: #FF5733;
+        }
+
+        h2 {
+            color: #495057;
+        }
+
+        input,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+        }
+
+        .login-btn {
+            background-color: green;
+            color: white;
+        }
+
+        .google-btn {
+            background-color: #DB4437;
+            color: white;
+        }
+
+        .otp-btn {
+            background-color: #FFC107;
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .skills-input-error {
+            color: red;
+            font-size: 14px;
+        }
+    </style>
 </head>
+
 <body>
-    <header>
-        <h1>Community Skill Swap</h1>
-        <p>Let's barter our skills!</p>
-    </header>
-    <div class="auth-container">
-        <form action="/signup" method="POST">
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="text" name="username" placeholder="Username" required>
-            <input type="password" name="password" placeholder="Password" required>
-            <button type="submit">Sign Up</button>
-        </form>
+    <div class="title-page" id="titlePage">
+        Welcome to Skill Swap
+        <div class="subtitle">Let's barter our skills</div>
     </div>
+
+    <div class="container hidden" id="authSelectionPage">
+        <h2>Login</h2>
+        <input type="text" id="loginUserId" placeholder="User ID">
+        <input type="password" id="loginPassword" placeholder="Password">
+        <button class="login-btn" onclick="login()">Login</button>
+        <button class="google-btn" onclick="showGoogleVerification()">Sign in with Google</button>
+        <p onclick="showSignupPage()" style="color: blue; cursor: pointer; text-decoration: underline;">Create an
+            account</p>
+
+    </div>
+
+    <div class="container hidden" id="googleVerificationPage">
+        <h2>Google Verification</h2>
+        <input type="email" id="email" placeholder="Enter your email">
+        <button class="otp-btn" onclick="sendOTP()">Send OTP</button>
+    </div>
+
+    <div class="container hidden" id="otpPage">
+        <h2>Enter OTP</h2>
+        <input type="text" id="otp" placeholder="Enter OTP">
+        <button class="otp-btn" onclick="verifyOTP()">Verify</button>
+    </div>
+
+    <div class="container hidden" id="homePage">
+        <h2>Enter Your Top 5 Skills</h2>
+        <input type="text" id="skillsInput" placeholder="Enter skills separated by commas">
+        <p class="skills-input-error hidden" id="skillsError">Max 5 skills allowed.</p>
+        <button class="login-btn" onclick="validateSkills()">Next</button>
+    </div>
+
+    <div class="container hidden" id="interestedSkillsPage">
+        <h2>Select Up to 3 Skills to Learn</h2>
+        <input type="text" id="interestedSkillsInput" placeholder="Enter up to 3 skills separated by commas">
+        <p class="skills-input-error hidden" id="interestedSkillsError">Max 3 skills allowed.</p>
+        <button class="login-btn" onclick="finishSetup()">Finish</button>
+    </div>
+
+    <script>
+        setTimeout(() => {
+            document.getElementById('titlePage').style.display = 'none';
+            document.getElementById('authSelectionPage').classList.remove('hidden');
+        }, 3000);
+
+        function login() {
+            alert("Login successful!");
+            document.getElementById('authSelectionPage').classList.add('hidden');
+            document.getElementById('homePage').classList.remove('hidden');
+        }
+
+        function showGoogleVerification() {
+            document.getElementById('authSelectionPage').classList.add('hidden');
+            document.getElementById('googleVerificationPage').classList.remove('hidden');
+        }
+
+        function sendOTP() {
+            alert("OTP sent to your email");
+            document.getElementById('googleVerificationPage').classList.add('hidden');
+            document.getElementById('otpPage').classList.remove('hidden');
+        }
+
+        function verifyOTP() {
+            alert("OTP verified successfully!");
+            document.getElementById('otpPage').classList.add('hidden');
+            document.getElementById('homePage').classList.remove('hidden');
+        }
+
+        function validateSkills() {
+            const skillsInput = document.getElementById('skillsInput').value;
+            const skills = skillsInput.split(',').map(skill => skill.trim()).filter(skill => skill);
+            if (skills.length > 5) {
+                document.getElementById('skillsError').classList.remove('hidden');
+            } else {
+                document.getElementById('skillsError').classList.add('hidden');
+                document.getElementById('homePage').classList.add('hidden');
+                document.getElementById('interestedSkillsPage').classList.remove('hidden');
+            }
+        }
+
+        function finishSetup() {
+            const interestedSkillsInput = document.getElementById('interestedSkillsInput').value;
+            const interestedSkills = interestedSkillsInput.split(',').map(skill => skill.trim()).filter(skill => skill);
+            if (interestedSkills.length > 3) {
+                document.getElementById('interestedSkillsError').classList.remove('hidden');
+            } else {
+                document.getElementById('interestedSkillsError').classList.add('hidden');
+                alert("Setup complete! Welcome to the platform.");
+            }
+        }
+    </script>
 </body>
+
 </html>
